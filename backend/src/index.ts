@@ -5,6 +5,7 @@ import userRoutes from './routes/userRoutes';
 import serviceRoutes from './routes/serviceRoutes';
 import subscriptionRoutes from './routes/subscriptionRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import { startScheduler } from './utils/scheduler';
 
 dotenv.config();
 
@@ -57,6 +58,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Start scheduler for auto-renewals and reminders
+  if (process.env.NODE_ENV !== 'test') {
+    startScheduler();
+  }
 });
 
 export default app;
