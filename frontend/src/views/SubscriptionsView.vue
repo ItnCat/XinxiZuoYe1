@@ -88,10 +88,20 @@ const openCreateModal = () => {
     end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     auto_renew: false,
     status: 'active',
-    payment_method: '',
+    payment_method: '支付宝',
     amount_paid: 0
   };
   showModal.value = true;
+};
+
+// 当选择服务时，自动更新支付金额
+const onServiceChange = () => {
+  if (currentSubscription.value.service_id) {
+    const selectedService = services.value.find(s => s.service_id === currentSubscription.value.service_id);
+    if (selectedService) {
+      currentSubscription.value.amount_paid = selectedService.price;
+    }
+  }
 };
 
 const openEditModal = (subscription: Subscription) => {
@@ -257,7 +267,7 @@ onMounted(() => {
           </div>
           <div class="form-group">
             <label>服务 *</label>
-            <select v-model.number="currentSubscription.service_id" required :disabled="isEditing">
+            <select v-model.number="currentSubscription.service_id" @change="onServiceChange" required :disabled="isEditing">
               <option value="0" disabled>请选择服务</option>
               <option v-for="service in services" :key="service.service_id" :value="service.service_id">
                 {{ service.service_name }} (¥{{ service.price }}/{{ service.billing_cycle }})
@@ -273,12 +283,16 @@ onMounted(() => {
             <input v-model="currentSubscription.end_date" type="date" required />
           </div>
           <div class="form-group">
-            <label>支付方式</label>
-            <input v-model="currentSubscription.payment_method" type="text" placeholder="如: 支付宝、微信、信用卡" />
+            <label>支付方式 *</label>
+            <select v-model="currentSubscription.payment_method" required>
+              <option value="支付宝">支付宝</option>
+              <option value="微信">微信</option>
+              <option value="银行卡">银行卡</option>
+            </select>
           </div>
           <div class="form-group">
             <label>支付金额</label>
-            <input v-model.number="currentSubscription.amount_paid" type="number" step="0.01" />
+            <input v-model.number="currentSubscription.amount_paid" type="number" step="0.01" readonly />
           </div>
           <div class="form-group">
             <label>
@@ -566,5 +580,83 @@ input:disabled + .slider {
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
+}
+
+/* 响应式设计 - 适配不同窗口尺寸 */
+@media (max-width: 1400px) {
+  .container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .subscriptions-view {
+    padding: 1rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    max-width: 100%;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    min-width: 800px;
+  }
+
+  .modal {
+    width: 95%;
+    max-width: none;
+    padding: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscriptions-view {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-box input,
+  .search-box button {
+    width: 100%;
+  }
+
+  .modal {
+    padding: 1rem;
+  }
+
+  .modal h2 {
+    font-size: 1.25rem;
+  }
 }
 </style>
