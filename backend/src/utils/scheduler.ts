@@ -148,6 +148,17 @@ export class Scheduler {
 /**
  * 启动定时任务调度器
  * 可以配置为每天在特定时间运行
+ * 
+ * 注意: 在生产环境中，建议使用更健壮的调度方案如 node-cron 或 agenda.js
+ * 以获得更好的可靠性和错误处理能力。
+ * 
+ * 示例使用 node-cron:
+ * ```
+ * import cron from 'node-cron';
+ * cron.schedule('0 0 * * *', () => {
+ *   Scheduler.runAllTasks();
+ * });
+ * ```
  */
 export function startScheduler(): void {
   // 每24小时运行一次
@@ -162,4 +173,5 @@ export function startScheduler(): void {
   }, interval);
   
   console.log('[Scheduler] Scheduler started - will run every 24 hours');
+  console.log('[Scheduler] Note: For production, consider using node-cron or agenda.js');
 }

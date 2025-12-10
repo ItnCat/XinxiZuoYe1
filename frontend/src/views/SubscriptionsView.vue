@@ -110,7 +110,7 @@ const saveSubscription = async () => {
       await subscriptionApi.update(currentSubscription.value.subscription_id, currentSubscription.value);
       alert('订阅更新成功');
     } else {
-      await subscriptionApi.create(currentSubscription.value as any);
+      await subscriptionApi.create(currentSubscription.value as Omit<Subscription, 'subscription_id' | 'created_at' | 'updated_at'>);
       alert('订阅创建成功');
     }
     closeModal();

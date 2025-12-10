@@ -80,7 +80,7 @@ const saveService = async () => {
       await serviceApi.update(currentService.value.service_id, currentService.value);
       alert('服务更新成功');
     } else {
-      await serviceApi.create(currentService.value as any);
+      await serviceApi.create(currentService.value as Omit<Service, 'service_id' | 'created_at' | 'updated_at'>);
       alert('服务创建成功');
     }
     closeModal();

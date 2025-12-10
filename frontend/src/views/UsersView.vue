@@ -92,7 +92,7 @@ const saveUser = async () => {
         alert('密码不能为空');
         return;
       }
-      await userApi.create(currentUser.value as any);
+      await userApi.create(currentUser.value as Partial<User> & { password: string });
       alert('用户创建成功');
     }
     closeModal();
